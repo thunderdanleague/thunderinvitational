@@ -17,7 +17,7 @@
     { "seat": 3,  "name": "Kess",   "teams": ["Texas Tech", "Liberty", "Western Michigan", "Army", "Kennesaw State", "Arizona State"] },
     { "seat": 4,  "name": "T+A",    "teams": ["Oregon", "SMU", "New Mexico", "Iowa", "Virginia Tech", "South Carolina"] },
     { "seat": 5,  "name": "Kerker", "teams": ["Indiana", "Michigan", "South Florida", "Hawai'i", "Florida", "Georgia Tech"] },
-    { "seat": 6,  "name": "Shev",   "teams": ["North Dakota State", "Louisville", "Air Force", "Virginia", "Marshall", "Florida_International"] },
+    { "seat": 6,  "name": "Shev",   "teams": ["North Dakota State", "Louisville", "Air Force", "Virginia", "Marshall", "Florida International"] },
     { "seat": 7,  "name": "EZ",    "teams": ["Ohio State", "Navy", "Pittsburgh", "Tennessee", "Texas State", "Nebraska"] },
     { "seat": 8,  "name": "Heck",   "teams": ["Georgia", "Oklahoma", "Ole Miss", "Old Dominion", "TCU", "Minnesota"] },
     { "seat": 9,  "name": "D.T.F",  "teams": ["Texas", "Texas A&M", "UTSA", "Jacksonville State", "Ohio", "Delaware"] },

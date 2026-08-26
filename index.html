@@ -135,13 +135,15 @@ function money(rows){
   const lastN=rows.filter(r=>r.rank===last).length;
   const live=cons.on&&last>L.payouts.length&&amt>0;
   const prize=pot-(live?amt:0);
-  const pctAt=p=>Number((L.payouts.find(x=>x.place===p)||{}).pct||0);
+  /* a place pays either a fixed dollar amount or a percentage of the prize pool */
+  const at=p=>{const e=L.payouts.find(x=>x.place===p); if(!e) return 0;
+    return e.amount!=null?Number(e.amount):prize*Number(e.pct||0)/100;};
   const share={};
   rows.forEach(r=>{ if(share[r.rank]!==undefined) return;
-    let s=0; for(let i=0;i<r.tiedWith;i++) s+=pctAt(r.rank+i); share[r.rank]=s/r.tiedWith; });
-  return {pot,prize,live,amt,last,lastN,
-    of:r=>prize*(share[r.rank]||0)/100 + (live&&r.rank===last?amt/lastN:0),
-    pctOf:r=>share[r.rank]||0};
+    let s=0; for(let i=0;i<r.tiedWith;i++) s+=at(r.rank+i); share[r.rank]=s/r.tiedWith; });
+  const paid=L.payouts.reduce((a,p)=>a+at(p.place),0)+(live?amt:0);
+  return {pot,prize,live,amt,last,lastN,paid,at,
+    of:r=>(share[r.rank]||0)+(live&&r.rank===last?amt/lastN:0)};
 }
 
 /* ================= STANDINGS ================= */
@@ -310,9 +312,11 @@ function rules(){
     ${S("Ties",`A dead heat shares the title. No tiebreaker. Shared positions pool the money for every place they
       cover and split it evenly — two tied for first take first and second money and halve it.`)}
     ${S("The money",`${usd(L.buyIn)} a man, ${n} playing, ${usd(m.pot)} in the pot.
-      ${m.live?`Last place gets ${usd(m.amt)} back off the top, leaving ${usd(m.prize)} to split. `:""}
-      ${L.payouts.map(p=>ord(p.place)+" takes "+p.pct+"%").join(", ")}.
-      ${m.live?" Tied for last splits the one refund.":""}`)}
+      ${m.live?`Last place gets ${usd(m.amt)} of it back off the top. `:""}
+      ${L.payouts.map(p=>ord(p.place)+" takes "+usd(m.at(p.place))).join(", ")}.
+      ${m.live?" Tied for last splits the one refund.":""}
+      ${Math.abs(m.paid-m.pot)>0.5?`<br><br><span style="color:var(--fall)">Heads up: the payouts add to
+        ${usd(m.paid)} against a ${usd(m.pot)} pot — ${m.paid>m.pot?"that's "+usd(m.paid-m.pot)+" more than there is":usd(m.pot-m.paid)+" is unaccounted for"}.</span>`:""}`)}
     ${S("When it's over",`Results freeze the moment the national championship game ends. Whatever the NCAA vacates
       or amends afterward is a bar argument, not a refund.`)}
     ${S("Named for",`Thunder Dan, who started this thing. Pour the pineapple tequila.`)}</div>`;

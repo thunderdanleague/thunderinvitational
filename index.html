@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Thunder Invitational</title>
+<meta name="description" content="Standings for the Thunder Invitational college football league.">
+<meta name="theme-color" content="#0B1017">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Thunder">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--storm:#0B1017;--deck:#131B26;--deck2:#1B2634;--line:rgba(233,238,245,.09);
+--bolt:#FFC93C;--leaf:#5FA37E;--rise:#4FBF87;--fall:#EF5B52;--ice:#6FB3D9;--text:#E9EEF5;--dim:#8798AB}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--storm);color:var(--text);font-family:Manrope,system-ui,sans-serif;
+-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 90px}
+.disp{font-family:Archivo,sans-serif;font-weight:800;letter-spacing:-.028em;line-height:1}
+.mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.note{font-size:13px;color:var(--dim);line-height:1.65}
+.bar{position:sticky;top:0;z-index:40;background:rgba(11,16,23,.94);backdrop-filter:blur(14px);
+border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.bar-in{max-width:1180px;margin:0 auto;padding:11px 16px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px}
+.brand .disp{font-size:15px}.brand span{color:var(--bolt)}
+.tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tab{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+padding:8px 12px;border:1px solid var(--line);background:none;color:var(--dim);cursor:pointer;border-radius:3px}
+.tab:hover{color:var(--text)}
+.tab[aria-selected="true"]{background:var(--text);color:var(--storm);border-color:var(--text);font-weight:600}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--bolt);outline-offset:2px}
+.card{background:var(--deck);border:1px solid var(--line);border-radius:6px}
+.btn{font-family:Manrope,sans-serif;font-weight:700;font-size:13px;padding:9px 14px;border-radius:4px;
+border:1px solid var(--line);background:var(--deck2);color:var(--text);cursor:pointer}
+.btn:hover{background:#243040}
+.btn.sm{padding:6px 11px;font-size:12px}
+.btn.ghost{background:none}
+select,input{background:var(--deck);border:1px solid var(--line);border-radius:4px;color:var(--text);
+padding:10px 12px;font-family:Manrope,sans-serif;font-size:14px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;
+padding:22px 0 20px;border-bottom:2px solid var(--bolt)}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);
+border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:22px 0}
+.cell{background:var(--deck);padding:14px 16px}
+.thead,.srow{display:grid;grid-template-columns:44px 1fr 76px 62px 1.3fr;gap:10px;align-items:center}
+.thead{padding:12px 0 8px;border-bottom:1px solid var(--line)}
+.srow{width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);
+padding:13px 0;color:inherit;cursor:pointer;font:inherit}
+.srow:hover{background:rgba(233,238,245,.025)}
+@media(max-width:760px){.thead,.srow{grid-template-columns:40px 1fr 70px 56px}.hide-sm{display:none}}
+.spread{position:relative;height:26px;background:var(--deck);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;background:rgba(255,201,60,.15)}
+.tick{position:absolute;top:0;bottom:0;width:1px;background:rgba(233,238,245,.1)}
+.notch{position:absolute;top:5px;bottom:5px;width:2px;background:var(--text);opacity:.55;transform:translateX(-1px)}
+.mark{position:absolute;top:-1px;bottom:-1px;width:3px;background:var(--bolt);transform:translateX(-1.5px)}
+.roster{background:var(--deck);border-bottom:1px solid var(--line)}
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-top:1px solid var(--line);gap:12px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.board{display:grid;grid-auto-flow:column;gap:1px;background:var(--line);min-width:min-content;grid-auto-columns:140px}
+.bcell{background:var(--storm);padding:8px 9px;min-height:54px}
+.bcell.hd{background:var(--deck2)}.bcell.snake{background:var(--deck)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.gm{display:flex;gap:9px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.two{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start}
+@media(max-width:940px){.two{grid-template-columns:1fr}}
+.side{flex:1;min-width:0;text-align:left;display:flex;align-items:center;gap:8px;
+border:1px solid var(--line);background:none;color:var(--dim);border-radius:4px;padding:8px 11px;cursor:pointer;font:inherit}
+.side.owned{color:var(--text);font-weight:700}
+.side.win{background:var(--bolt);color:#1A1204;border-color:var(--bolt)}
+.side.lose{border-color:rgba(239,91,82,.35);color:var(--dim)}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;padding:3px 6px;
+border-radius:3px;border:1px solid rgba(255,201,60,.34);color:var(--bolt);white-space:nowrap}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);display:flex;gap:12px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bar"><div class="bar-in">
+  <div class="brand">
+    <svg width="18" height="24" viewBox="0 0 40 53" aria-hidden="true"><defs>
+      <pattern id="pn" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#FFC93C"/><path d="M0 0h7M0 3.5h7M0 0v7M3.5 0v7" stroke="rgba(26,18,4,.34)" stroke-width="1"/>
+      </pattern></defs>
+      <path d="M23.5 1 4 29h11.5L13 52 36 22H23z" fill="url(#pn)" stroke="#FFC93C" stroke-width="1.6" stroke-linejoin="round"/>
+    </svg>
+    <div class="disp">The Thunder <span>Invitational</span></div>
+  </div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+</div></div>
+<div class="wrap" id="app"><p class="note" style="padding-top:40px">Loading the board…</p></div>
+
+<script>
+const F = (p)=> p>=1?"1.000":p.toFixed(3).slice(1);
+const $ = (h)=>{const d=document.createElement("div");d.innerHTML=h.trim();return d.firstChild;};
+const esc = (s)=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const usd = (n)=>"$"+Math.round(n).toLocaleString();
+const FLAME='<svg width="13" height="13" viewBox="0 0 16 16" aria-label="hot"><path d="M8 1.5c.4 2.6-1.2 3.4-2.4 4.7A4.9 4.9 0 0 0 4.2 9.6a3.9 3.9 0 0 0 7.7.5c.3-1.9-.7-3.2-1.6-4.3-.3.6-.8 1-1.3 1.1.6-1.8.2-3.9-1-5.4Z" fill="#FF8A3D" stroke="#FFC93C" stroke-width=".7"/></svg>';
+const FROST='<svg width="13" height="13" viewBox="0 0 16 16" aria-label="cold"><g stroke="#6FB3D9" stroke-width="1.2" stroke-linecap="round"><path d="M8 2v12M2.8 5l10.4 6M13.2 5 2.8 11"/></g></svg>';
+
+let D=null, tab="standings", open=new Set(), scen={}, schedScope="all", wiScope="all";
+
+const TABS=[["standings","Standings"],["board","Board"],["schedule","Schedule"],["whatif","What if"],["rules","Rules"]];
+
+/* ---- ranking, shared by the live board and any what-if ---- */
+function rank(extra){
+  const rows=D.owners.map(o=>{
+    let w=o.w,l=o.l;
+    if(extra) for(const [gid,win] of Object.entries(extra)){
+      const g=D.upcoming.find(x=>x.id===gid); if(!g) continue;
+      const lose = win===g.home?g.away:g.home;
+      if(o.teams.includes(win)) w++;
+      if(o.teams.includes(lose)) l++;
+    }
+    const g=w+l;
+    return {...o,w,l,pct:g?w/g:0};
+  });
+  rows.sort((a,b)=>b.pct-a.pct||b.w-a.w||a.seat-b.seat);
+  let r=0,prev=null;
+  rows.forEach((x,i)=>{if(prev===null||x.pct<prev-1e-9){r=i+1;prev=x.pct;} x.rank=r;});
+  const c={}; rows.forEach(x=>c[x.rank]=(c[x.rank]||0)+1);
+  return rows.map(x=>({...x,tied:c[x.rank]>1,tiedWith:c[x.rank]}));
+}
+
+/* ---- money, with shared places pooled and split ---- */
+function money(rows){
+  const L=D.league, pot=D.owners.length*L.buyIn;
+  const cons=L.consolation||{}, amt=cons.amount==null?L.buyIn:cons.amount;
+  const last=Math.max(...rows.map(r=>r.rank));
+  const lastN=rows.filter(r=>r.rank===last).length;
+  const live=cons.on&&last>L.payouts.length&&amt>0;
+  const prize=pot-(live?amt:0);
+  const pctAt=p=>Number((L.payouts.find(x=>x.place===p)||{}).pct||0);
+  const share={};
+  rows.forEach(r=>{ if(share[r.rank]!==undefined) return;
+    let s=0; for(let i=0;i<r.tiedWith;i++) s+=pctAt(r.rank+i); share[r.rank]=s/r.tiedWith; });
+  return {pot,prize,live,amt,last,lastN,
+    of:r=>prize*(share[r.rank]||0)/100 + (live&&r.rank===last?amt/lastN:0),
+    pctOf:r=>share[r.rank]||0};
+}
+
+/* ================= STANDINGS ================= */
+function standings(){
+  const rows=rank(null), lead=rows.filter(r=>r.rank===1), next=rows.find(r=>r.rank>1);
+  const m=money(rows);
+  const riser=[...rows].sort((a,b)=>b.move-a.move)[0];
+  const faller=[...rows].sort((a,b)=>a.move-b.move)[0];
+  const best=[...rows].sort((a,b)=>{
+    const p=x=>x.thisWeek.w+x.thisWeek.l?x.thisWeek.w/(x.thisWeek.w+x.thisWeek.l):-1;
+    return p(b)-p(a)||b.thisWeek.w-a.thisWeek.w;})[0];
+
+  let h=`<div class="hero"><div>
+    <div class="eyebrow">${lead.length>1?"Sharing the lead — "+lead.length+" way":"Holding the cup"}</div>
+    <div class="disp" style="font-size:clamp(26px,6vw,46px);color:var(--bolt);margin-top:8px">${lead.map(x=>esc(x.name)).join(" · ")}</div>
+    <div class="mono note" style="margin-top:6px">${lead[0].w}\u2013${lead[0].l}${next?" · +"+F(lead[0].pct-next.pct)+" on "+esc(next.name):""}</div>
+  </div><div class="mono disp" style="font-size:clamp(30px,7vw,50px);color:var(--bolt)">${F(lead[0].pct)}</div></div>`;
+
+  if(D.slot>1) h+=`<div class="strip">
+    <div class="cell"><div class="eyebrow">Biggest riser</div><div class="disp" style="font-size:19px;margin:8px 0 4px">${esc(riser.name)}</div>
+      <div class="mono" style="font-size:12px;color:${riser.move>0?"var(--rise)":"var(--dim)"}">${riser.move>0?"▲"+riser.move+" spots":"nobody moved up"}</div></div>
+    <div class="cell"><div class="eyebrow">Rough week</div><div class="disp" style="font-size:19px;margin:8px 0 4px">${esc(faller.name)}</div>
+      <div class="mono" style="font-size:12px;color:${faller.move<0?"var(--fall)":"var(--dim)"}">${faller.move<0?"▼"+(-faller.move)+" spots":"nobody slipped"}</div></div>
+    <div class="cell"><div class="eyebrow">Best week on the board</div><div class="disp" style="font-size:19px;margin:8px 0 4px">${esc(best.name)}</div>
+      <div class="mono" style="font-size:12px;color:var(--bolt)">${best.thisWeek.w}\u2013${best.thisWeek.l}</div></div>
+  </div>`;
+
+  h+=`<div class="thead eyebrow"><div>Rk</div><div>Owner</div><div>Record</div><div>Pct</div>
+    <div class="hide-sm">Spread of the roster · 0 to 1.000</div></div>`;
+
+  rows.forEach(r=>{
+    const ticks=[10,20,30,40,50,60,70,80,90].map(x=>`<div class="tick" style="left:${x}%"></div>`).join("");
+    const notches=r.each.map(e=>`<div class="notch" style="left:${e.pct*100}%"></div>`).join("");
+    const pay=m.of(r);
+    h+=`<button class="srow" data-seat="${r.seat}" aria-expanded="${open.has(r.seat)}">
+      <div><div class="disp" style="font-size:18px;color:${r.rank===1?"var(--bolt)":"var(--dim)"}">${r.tied?"T":""}${String(r.rank).padStart(2,"0")}</div>
+        ${r.move?`<div class="mono" style="font-size:10.5px;margin-top:3px;font-weight:600;color:${r.move>0?"var(--rise)":"var(--fall)"}">${r.move>0?"▲":"▼"}${Math.abs(r.move)}</div>`:""}</div>
+      <div><div style="display:flex;align-items:center;gap:6px"><span style="font-weight:700;font-size:15px">${esc(r.name)}</span>
+        ${r.hot?FLAME:""}${r.cold?FROST:""}</div>
+        <div class="eyebrow" style="margin-top:3px">Seat ${r.seat} · ${r.thisWeek.w}\u2013${r.thisWeek.l} last week${pay>0?" · "+usd(pay):""}</div></div>
+      <div class="mono" style="font-size:14.5px">${r.w}\u2013${r.l}</div>
+      <div class="mono" style="font-size:14.5px;font-weight:600;color:${r.rank===1?"var(--bolt)":"var(--text)"}">${F(r.pct)}</div>
+      <div class="hide-sm"><div class="spread"><div class="fill" style="width:${r.pct*100}%"></div>${ticks}${notches}
+        <div class="mark" style="left:${r.pct*100}%"></div></div></div></button>`;
+    if(open.has(r.seat)){
+      h+=`<div class="roster">`+[...r.each].sort((a,b)=>b.pct-a.pct).map(e=>
+        `<div class="rrow"><div><div style="font-weight:700;font-size:14px">${esc(e.team)}</div>
+          <div class="eyebrow" style="margin-top:3px">${D.teams[e.team].games.filter(g=>!g.result).length} left</div></div>
+          <div style="text-align:right"><div class="mono" style="font-size:14px;font-weight:600">${e.w}\u2013${e.l}</div>
+          <div class="mono" style="font-size:11.5px;color:${e.pct>=.6?"var(--rise)":e.pct<.4?"var(--fall)":"var(--dim)"}">${F(e.pct)}</div></div></div>`).join("")
+        +`<div class="note" style="padding:10px 16px">Finishes between ${F(r.floor)} and ${F(r.ceiling)} · ${r.remaining} games left</div></div>`;
+    }
+  });
+  return h;
+}
+
+/* ================= BOARD ================= */
+function board(){
+  const byS=[...D.owners].sort((a,b)=>a.seat-b.seat);
+  let h=`<p class="note" style="max-width:560px;margin:20px 0 16px">The draft as it went. Seats across, rounds down. Scroll sideways for the full room.</p>
+    <div class="scroll"><div class="board" style="grid-template-rows:auto repeat(${D.league.rounds},54px)">`;
+  byS.forEach(o=>{
+    h+=`<div class="bcell hd"><div class="eyebrow" style="font-size:9px">Seat ${o.seat}</div>
+      <div style="font-weight:700;font-size:12.5px;margin-top:3px">${esc(o.name)}</div></div>`;
+    o.teams.forEach((t,i)=>{
+      const e=o.each[i];
+      h+=`<div class="bcell${(i+1)%2===0?" snake":""}"><div class="eyebrow" style="font-size:8.5px">R${i+1} · ${e.w}\u2013${e.l}</div>
+        <div style="font-weight:700;font-size:12.5px;margin-top:4px;line-height:1.15">${esc(t)}</div></div>`;
+    });
+  });
+  return h+`</div></div>`;
+}
+
+/* ================= SCHEDULE ================= */
+function schedule(){
+  const opts=[`<option value="all">Every drafted team</option>`]
+    .concat([...D.owners].sort((a,b)=>a.seat-b.seat).map(o=>`<option value="${o.seat}" ${schedScope==String(o.seat)?"selected":""}>${esc(o.name)}'s six</option>`)).join("");
+  const list = schedScope==="all"
+    ? Object.keys(D.teams).sort()
+    : (D.owners.find(o=>String(o.seat)===String(schedScope))||{teams:[]}).teams;
+
+  let h=`<p class="note" style="max-width:580px;margin:20px 0 14px">Every drafted team's slate — results behind, fixtures ahead.</p>
+    <select id="schedScope" style="width:220px;margin-bottom:18px">${opts}</select><div class="grid">`;
+  list.forEach(t=>{
+    const T=D.teams[t];
+    h+=`<div class="card" style="padding:14px"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+      <div style="font-weight:700;font-size:15px">${esc(t)}</div><div class="mono" style="font-size:15px;font-weight:600">${T.w}\u2013${T.l}</div></div><div style="margin-top:10px">`;
+    T.games.forEach(g=>{
+      h+=`<div class="gm"><span class="mono" style="font-size:10.5px;width:30px;color:var(--dim)">${g.postseason?"PS":"W"+g.week}</span>
+        <span style="font-size:11px;color:var(--dim)">${g.home?"vs":"at"}</span>
+        <span style="flex:1;font-size:12.5px;min-width:0">${esc(g.opponent)}</span>
+        <span class="mono" style="font-size:11.5px;font-weight:600;color:${!g.result?"var(--dim)":g.result==="W"?"var(--rise)":"var(--fall)"}">${g.result?g.result+" "+g.score:"—"}</span></div>`;
+    });
+    h+=`</div></div>`;
+  });
+  return h+`</div>`;
+}
+
+/* ================= WHAT IF ================= */
+function whatif(){
+  const rows=rank(scen), cur=rank(null);
+  const was=Object.fromEntries(cur.map(r=>[r.seat,r.rank]));
+  const bestFloor=Math.max(...cur.map(r=>r.floor));
+  const games = wiScope==="all" ? D.upcoming
+    : D.upcoming.filter(g=>String(D.ownerOfTeam[g.home])===wiScope||String(D.ownerOfTeam[g.away])===wiScope);
+  const n=Object.keys(scen).length;
+
+  const opts=[`<option value="all">Every remaining game</option>`]
+    .concat([...D.owners].sort((a,b)=>a.seat-b.seat).map(o=>`<option value="${o.seat}" ${wiScope==String(o.seat)?"selected":""}>${esc(o.name)}'s games</option>`)).join("");
+
+  let h=`<div style="padding-top:20px"><div class="eyebrow">Scenario · private to this phone, nothing is saved</div>
+    <h3 class="disp" style="font-size:30px;margin:10px 0 6px">${n?n+" game"+(n===1?"":"s")+" called":"Call some games"}</h3>
+    <p class="note" style="max-width:540px">Tap either side to hand it the win — the other side takes the loss.
+    Mix wins and losses however you like, tap again to undo. ${D.upcoming.length} games left that touch a drafted team.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 18px">
+      <select id="wiScope" style="width:200px">${opts}</select>
+      <button class="btn sm ghost" id="wiClear"${n?"":" disabled"}>Clear</button></div><div class="two"><div>`;
+
+  let wk=null;
+  games.forEach(g=>{
+    const label=g.postseason?"Postseason":"Week "+g.week;
+    if(label!==wk){ h+=`${wk!==null?"</div>":""}<div style="margin-bottom:18px"><div class="eyebrow" style="margin-bottom:8px">${label}</div>`; wk=label; }
+    const ch=scen[g.id];
+    const side=(team)=>{
+      const seat=D.ownerOfTeam[team];
+      const own=seat?D.owners.find(o=>o.seat===seat):null;
+      const cls="side"+(own?" owned":"")+(ch===team?" win":ch?" lose":"");
+      return `<button class="${cls}" data-game="${g.id}" data-team="${esc(team)}">
+        <span style="flex:1;min-width:0"><span style="font-size:12.5px">${esc(team)}</span>
+        ${own?`<span style="display:block;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;opacity:.75">${esc(own.name)}</span>`:""}</span>
+        ${ch?`<span class="mono" style="font-size:13px;font-weight:700;color:${ch===team?"#1A1204":"var(--fall)"}">${ch===team?"W":"L"}</span>`:""}</button>`;
+    };
+    h+=`<div style="display:flex;gap:6px;margin-bottom:6px">${side(g.away)}<span class="eyebrow" style="align-self:center;font-size:9px">at</span>${side(g.home)}</div>`;
+  });
+  if(wk!==null) h+=`</div>`;
+  if(!games.length) h+=`<p class="note">No games left for that filter.</p>`;
+
+  h+=`</div><aside><div class="card" style="padding:16px;position:sticky;top:80px">
+    <div class="eyebrow">Projected finish</div>`;
+  rows.forEach(r=>{
+    const d=was[r.seat]-r.rank;
+    const dead=r.ceiling<bestFloor-1e-9;
+    h+=`<div style="display:flex;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)">
+      <span class="disp" style="font-size:14px;width:20px;color:${r.rank===1?"var(--bolt)":"var(--dim)"}">${String(r.rank).padStart(2,"0")}</span>
+      <span class="mono" style="width:22px;font-size:11px;color:${d>0?"var(--rise)":d<0?"var(--fall)":"transparent"}">${d>0?"▲"+d:d<0?"▼"+(-d):"·"}</span>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">${esc(r.name)}</div>
+        <div class="mono" style="font-size:10px;color:var(--dim);margin-top:2px">${dead?"out of it":F(r.floor)+" – "+F(r.ceiling)}</div></div>
+      <span class="mono" style="font-size:13px;font-weight:600">${F(r.pct)}</span></div>`;
+  });
+  return h+`<p class="note" style="margin-top:12px;font-size:11.5px">The small range is each man's floor and ceiling if every one of his remaining games went one way. A ceiling below the leader's floor means he's out of it.</p></div></aside></div></div>`;
+}
+
+/* ================= RULES ================= */
+function rules(){
+  const L=D.league, rows=rank(null), m=money(rows), n=D.owners.length;
+  const ord=p=>p===1?"first":p===2?"second":p===3?"third":p+"th";
+  const S=(t,b)=>`<section style="margin-bottom:28px"><div class="eyebrow" style="margin-bottom:10px">${t}</div>
+    <div style="font-size:14px;line-height:1.7;max-width:640px">${b}</div></section>`;
+  return `<div style="padding-top:24px;max-width:720px">
+    <h2 class="disp" style="font-size:clamp(28px,7vw,48px);margin-bottom:10px">The rules</h2>
+    <p class="note" style="margin-bottom:30px">Written down so nobody has to remember them in December.</p>
+    ${S("Scoring",`Add up every win your six teams collect and divide by every game they play. Regular season,
+      conference championships, bowls, playoff — all of it. Not rankings, not margin. One number.<br><br>
+      Worth knowing: postseason games add to your denominator. An extra game only helps if your team is likelier
+      to win it than your current percentage. Deep runs cut both ways.`)}
+    ${S("Ties",`A dead heat shares the title. No tiebreaker. Shared positions pool the money for every place they
+      cover and split it evenly — two tied for first take first and second money and halve it.`)}
+    ${S("The money",`${usd(L.buyIn)} a man, ${n} playing, ${usd(m.pot)} in the pot.
+      ${m.live?`Last place gets ${usd(m.amt)} back off the top, leaving ${usd(m.prize)} to split. `:""}
+      ${L.payouts.map(p=>ord(p.place)+" takes "+p.pct+"%").join(", ")}.
+      ${m.live?" Tied for last splits the one refund.":""}`)}
+    ${S("When it's over",`Results freeze the moment the national championship game ends. Whatever the NCAA vacates
+      or amends afterward is a bar argument, not a refund.`)}
+    ${S("Named for",`Thunder Dan, who started this thing. Pour the pineapple tequila.`)}</div>`;
+}
+
+/* ================= SHELL ================= */
+function render(){
+  document.getElementById("tabs").innerHTML=TABS.map(([k,v])=>
+    `<button class="tab" role="tab" data-tab="${k}" aria-selected="${tab===k}">${v}</button>`).join("");
+  const body={standings,board,schedule,whatif,rules}[tab]();
+  const when=new Date(D.generatedAt).toLocaleString(undefined,{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+  document.getElementById("app").innerHTML=
+    `<div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)">
+      <span class="eyebrow">${D.season} · ${D.owners.length} playing · ${D.league.rounds} rounds · aggregate win pct</span>
+      <span class="eyebrow">Updated ${esc(when)}</span></div>${body}
+    <footer><div class="note" style="max-width:620px">Six teams, one number: total wins over total games,
+      bowls and playoff included. Dead heats share the title and split the money.</div></footer>`;
+}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-tab]");
+  if(t){ tab=t.dataset.tab; render(); window.scrollTo(0,0); return; }
+  const row=e.target.closest("[data-seat]");
+  if(row){ const s=+row.dataset.seat; open.has(s)?open.delete(s):open.add(s); render(); return; }
+  const g=e.target.closest("[data-game]");
+  if(g){ const {game,team}=g.dataset; scen[game]===team?delete scen[game]:scen[game]=team; render(); return; }
+  if(e.target.id==="wiClear"){ scen={}; render(); }
+});
+document.addEventListener("change",e=>{
+  if(e.target.id==="schedScope"){ schedScope=e.target.value; render(); }
+  if(e.target.id==="wiScope"){ wiScope=e.target.value; render(); }
+});
+
+fetch("data/standings.json?t="+Date.now())
+  .then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(d=>{ D=d; render(); })
+  .catch(()=>{ document.getElementById("app").innerHTML=
+    `<p class="note" style="padding-top:40px">Standings haven't been built yet. Run the Update standings workflow in the Actions tab.</p>`; });
+</script>
+</body>
+</html>

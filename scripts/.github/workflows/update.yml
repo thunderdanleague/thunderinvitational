@@ -1,0 +1,43 @@
+name: Update standings
+
+on:
+  schedule:
+    # Every hour on Saturday and Sunday (UTC) — game days.
+    - cron: "0 * * * 6,0"
+    # Once a day the rest of the week, to catch stragglers and corrections.
+    - cron: "0 13 * * 1-5"
+  workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: standings
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build standings
+        env:
+          CFBD_API_KEY: ${{ secrets.CFBD_API_KEY }}
+        run: node scripts/update.mjs
+
+      - name: Commit if anything changed
+        run: |
+          git config user.name "thunder-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/standings.json
+          if git diff --staged --quiet; then
+            echo "No change."
+          else
+            git commit -m "Standings through $(date -u +%Y-%m-%dT%H:%MZ)"
+            git push
+          fi
